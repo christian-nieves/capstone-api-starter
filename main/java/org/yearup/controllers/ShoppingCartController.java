@@ -61,4 +61,17 @@ public class ShoppingCartController
         User user = userService.getByUserName(userName); // looks up the full user record
         int userId = user.getId(); // pulls their user id
 
-        return shoppingCartService.updateProduct(userId, productId,
+        return shoppingCartService.updateProduct(userId, productId, item.getQuantity()); // updates the quantity for that product
+    }
+
+    // Clear cart
+    @DeleteMapping // delete /cart
+    public ShoppingCart clearCart(Principal principal)
+    {
+        String userName = principal.getName(); // gets the logged-in user's username
+        User user = userService.getByUserName(userName); // looks up the full user record
+        int userId = user.getId(); // pulls their user id
+
+        return shoppingCartService.clearCart(userId); // empties that user's cart
+    }
+}
