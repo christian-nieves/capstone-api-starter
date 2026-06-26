@@ -9,7 +9,7 @@ import org.yearup.repository.ShoppingCartRepository;
 
 import java.util.List;
 
-@Service // marks this as a service holding business logic
+@Service
 public class ShoppingCartService
 {
     private final ShoppingCartRepository shoppingCartRepository; // talks to the shopping_cart table via JPA
