@@ -10,40 +10,42 @@ import org.yearup.service.UserService;
 
 import java.security.Principal;
 
-@RestController
-@RequestMapping("profile")
-@CrossOrigin
-@PreAuthorize("isAuthenticated()")
+@RestController // makes this class a rest controller
+@RequestMapping("profile") // base url is profile
+@CrossOrigin // allows the frontend website to call these endpoints
+@PreAuthorize("isAuthenticated()") // every endpoint here requires the user to be logged in
 public class ProfileController
 {
-    private ProfileService profileService;
-    private UserService userService;
+    private ProfileService profileService; // handles profile business logic
+    private UserService userService; // used to look up the logged in user
 
+    // Constructor
     @Autowired
     public ProfileController(ProfileService profileService, UserService userService)
     {
-        this.profileService = profileService;
-        this.userService = userService;
+        this.profileService = profileService; // injects the profile service
+        this.userService = userService; // injects the user service
     }
 
-    @GetMapping
+    // Get profile
+    @GetMapping // get request to profile
     public Profile getProfile(Principal principal)
     {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
+        String userName = principal.getName(); // gets the logged in user's username
+        User user = userService.getByUserName(userName); // looks up the full user record
+        int userId = user.getId(); // pulls their user id
 
-        return profileService.getByUserId(userId);
+        return profileService.getByUserId(userId); // returns that user's profile
     }
 
-    @PutMapping
+    // Update profile
+    @PutMapping // put request to profile
     public Profile updateProfile(@RequestBody Profile profile, Principal principal)
     {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
+        String userName = principal.getName(); // gets the logged in user's username
+        User user = userService.getByUserName(userName); // looks up the full user record
+        int userId = user.getId(); // pulls their user id
 
-        return profileService.update(userId, profile);
+        return profileService.update(userId, profile); // updates and returns the profile
     }
-    // test done
 }
