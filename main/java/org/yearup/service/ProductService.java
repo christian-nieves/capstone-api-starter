@@ -46,7 +46,7 @@ public class ProductService
     // Create Product
     public Product create(Product product)
     {
-        product.setProductId(0); // resets id so the database generates a new one
+        product.setProductId(0); // resets id so the database generates new one
         return productRepository.save(product); // inserts the new product and returns it
     }
 
