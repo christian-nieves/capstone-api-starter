@@ -13,60 +13,52 @@ import org.yearup.service.UserService;
 
 import java.security.Principal;
 
-@RestController
-@RequestMapping("cart")
-@CrossOrigin
-@PreAuthorize("isAuthenticated()")
+@RestController // makes this class a rest controller
+@RequestMapping("cart") // base url is /cart
+@CrossOrigin // allows the frontend website to call these endpoints
+@PreAuthorize("isAuthenticated()") // every endpoint here requires the user to be logged in
 public class ShoppingCartController
 {
-    private ShoppingCartService shoppingCartService;
-    private UserService userService;
+    private ShoppingCartService shoppingCartService; // handles cart business logic
+    private UserService userService; // used to look up the logged-in user
 
+    // Constructor
     @Autowired
     public ShoppingCartController(ShoppingCartService shoppingCartService, UserService userService)
     {
-        this.shoppingCartService = shoppingCartService;
-        this.userService = userService;
+        this.shoppingCartService = shoppingCartService; // injects the cart service
+        this.userService = userService; // injects the user service
     }
 
-    @GetMapping
+    // Get cart
+    @GetMapping // get /cart
     public ShoppingCart getCart(Principal principal)
     {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
+        String userName = principal.getName(); // gets the logged-in user's username
+        User user = userService.getByUserName(userName); // looks up the full user record
+        int userId = user.getId(); // pulls their user id
 
-        return shoppingCartService.getByUserId(userId);
+        return shoppingCartService.getByUserId(userId); // returns that user's cart
     }
 
-    @PostMapping("products/{productId}")
+    // Add product
+    @PostMapping("products/{productId}") // post /cart/products/15
     public ResponseEntity<ShoppingCart> addProduct(@PathVariable int productId, Principal principal)
     {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
+        String userName = principal.getName(); // gets the logged-in user's username
+        User user = userService.getByUserName(userName); // looks up the full user record
+        int userId = user.getId(); // pulls their user id
 
-        ShoppingCart cart = shoppingCartService.addProduct(userId, productId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cart);
+        ShoppingCart cart = shoppingCartService.addProduct(userId, productId); // adds the product to their cart
+        return ResponseEntity.status(HttpStatus.CREATED).body(cart); // returns the updated cart with 201 created
     }
 
-    @PutMapping("products/{productId}")
+    // Update product
+    @PutMapping("products/{productId}") // put /cart/products/15
     public ShoppingCart updateProduct(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal)
     {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
+        String userName = principal.getName(); // gets the logged-in user's username
+        User user = userService.getByUserName(userName); // looks up the full user record
+        int userId = user.getId(); // pulls their user id
 
-        return shoppingCartService.updateProduct(userId, productId, item.getQuantity());
-    }
-
-    @DeleteMapping
-    public ShoppingCart clearCart(Principal principal)
-    {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
-
-        return shoppingCartService.clearCart(userId);
-    }
-}
+        return shoppingCartService.updateProduct(userId, productId,
